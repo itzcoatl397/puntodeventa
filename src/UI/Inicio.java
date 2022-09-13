@@ -72,6 +72,11 @@ public class Inicio extends javax.swing.JFrame {
         jDesktopPane1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/pan (1).png"))); // NOI18N
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 78, 78));
@@ -329,6 +334,11 @@ p.setVisible(true);
     private void btnProvedores1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProvedores1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnProvedores1ActionPerformed
+
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jLabel1MouseClicked
 
     /**
      * @param args the command line arguments

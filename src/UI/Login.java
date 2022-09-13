@@ -87,6 +87,11 @@ public class Login extends javax.swing.JFrame {
         btnLogin.setDefaultCapable(false);
         btnLogin.setFocusCycleRoot(true);
         btnLogin.setInheritsPopupMenu(true);
+        btnLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnLoginMousePressed(evt);
+            }
+        });
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoginActionPerformed(evt);
@@ -138,6 +143,10 @@ public class Login extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void btnLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnLoginMousePressed
 
 
     /**
