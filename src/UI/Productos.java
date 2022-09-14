@@ -8,6 +8,7 @@ import Database.Conexion;
 import static Database.Conexion.getConnection;
 import Database.Producto;
 import java.sql.Connection;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,11 +20,19 @@ public class Productos extends javax.swing.JFrame {
     /**
      * Creates new form Productos
      */
-    public Productos() {
+    public Productos() throws SQLException {
+   
         initComponents();
         this.setLocationRelativeTo(null);
-        
+
         this.setLocationRelativeTo(null);
+        Connection conn = getConnection();
+        Producto p = new Producto(conn);
+        try {
+            p.mostrarProductos(tblProductos);
+        } catch (Exception e) {
+        }
+
     }
 
     /**
@@ -48,6 +57,7 @@ public class Productos extends javax.swing.JFrame {
         btnCancelar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProductos = new javax.swing.JTable();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -100,6 +110,7 @@ public class Productos extends javax.swing.JFrame {
             }
         });
 
+        tblProductos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -119,7 +130,13 @@ public class Productos extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        tblProductos.setRequestFocusEnabled(false);
+        tblProductos.setRowSelectionAllowed(false);
         jScrollPane1.setViewportView(tblProductos);
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(0, 0, 153));
+        jLabel6.setText("Productos en Existencia");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -133,18 +150,13 @@ public class Productos extends javax.swing.JFrame {
                         .addGap(43, 43, 43)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(160, 160, 160)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(160, 160, 160)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5))
-                                .addGap(26, 26, 26))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(btnAll, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(106, 106, 106)))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(btnAll, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(26, 26, 26)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtCodigoProducto, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
                             .addComponent(txtNameProducts)
@@ -152,9 +164,14 @@ public class Productos extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(9, 9, 9)
                                 .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 492, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(119, 119, 119)
+                        .addComponent(jLabel6)))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -185,6 +202,8 @@ public class Productos extends javax.swing.JFrame {
                 .addContainerGap(133, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addGap(36, 36, 36)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(92, 92, 92))
         );
@@ -207,7 +226,7 @@ public class Productos extends javax.swing.JFrame {
 
         // TODO add your handling code here:
         Inicio i = new Inicio();
-        
+
         i.setVisible(true);
         this.dispose();
 
@@ -218,18 +237,18 @@ public class Productos extends javax.swing.JFrame {
         Connection conn = getConnection();
         String codigoProducto = txtCodigoProducto.getText().trim(), nombrerProducto = txtNameProducts.getText().trim();
         int cantidad = (int) spCantidad.getValue();
-        
+
         try {
-            
+
             if (codigoProducto.length() > 0 && nombrerProducto.length() > 0 && cantidad >= 0) {
                 Producto p = new Producto(codigoProducto, nombrerProducto, cantidad, conn);
                 p.insertProducts();
-
+p.mostrarProductos(tblProductos);
 
             } else {
                 JOptionPane.showMessageDialog(null, "LLene Bien el  formulario");
             }
-            
+
             txtCodigoProducto.setText("");
             txtNameProducts.setText("");
             spCantidad.setValue(0);
@@ -272,7 +291,11 @@ public class Productos extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Productos().setVisible(true);
+                try {
+                    new Productos().setVisible(true);
+                } catch (Exception e) {
+                }
+
             }
         });
     }
@@ -285,6 +308,7 @@ public class Productos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSpinner spCantidad;

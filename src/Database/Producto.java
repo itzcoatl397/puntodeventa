@@ -7,10 +7,12 @@ package Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -22,7 +24,6 @@ public class Producto {
     private int cantidad;
     private Connection conexion = null;
 
-
     public Producto(String codigoProducto, String nombre, int cantidad, Connection conexion) {
         this.codigoProducto = codigoProducto;
         this.nombre = nombre;
@@ -33,6 +34,9 @@ public class Producto {
     public Producto() {
     }
 
+    public Producto(Connection conn) {
+       this.conexion = conn;
+    }
 
     public void insertProducts() throws SQLException {
 
@@ -48,29 +52,45 @@ public class Producto {
         if (!preparedStmt.getMoreResults()) {
             JOptionPane.showMessageDialog(null, "Se agrego correctamente los productos");
 
-mostrarProductos();
         }
 
-        conexion.close();
-        preparedStmt.close();
     }
 
-    public void mostrarProductos() throws SQLException  {
-        String codigoProducto,nombreProducto,cantidad;
-        ArrayList miLista = new ArrayList();
-        Producto producto;
-        String sql = "SELECT codigoProducto,nombreproducto,cantidad FROM productos";
-        Statement stm = conexion.createStatement();
+    public void mostrarProductos(JTable datos) throws SQLException {
+        String codigoProducto, nombreProducto, cantidad;
+        DefaultTableModel modelo = new DefaultTableModel();
+        ResultSet rst = null;
+        PreparedStatement ps = null;
+        ResultSetMetaData rsMd;
 
-        ResultSet rst = stm.executeQuery(sql);
+        try {
 
-        while (rst.next()) {
+            datos.setModel(modelo);
+
+            String sql = "SELECT codigoProducto,nombreproducto,cantidad FROM productos";
+            ps = conexion.prepareStatement(sql);
+            rst = ps.executeQuery();
+            rsMd = rst.getMetaData();
+            int cantidadColumnas = rsMd.getColumnCount();// obtebnemos las columnos
+
+            modelo.addColumn("Codigo Producto");
            
-   
-            
-             cantidad = rst.getString("cantidad");
+            modelo.addColumn("Nombre Producto");
+            modelo.addColumn("Cantidad Producto");
+            while (rst.next()) {
+                Object[] filas = new Object[cantidadColumnas];
 
-            System.out.println(cantidad);
+                for (int i = 0; i < cantidadColumnas; i++) {
+
+                    filas[i] = rst.getObject(i + 1);
+
+                }
+                modelo.addRow(filas);
+
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
 
         }
 
